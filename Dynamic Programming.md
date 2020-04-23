@@ -43,6 +43,48 @@ def minCostClimbingStairs(self, cost: List[int]) -> int:
 ```
 
 
+### Paint House Leetcode #256 
+https://leetcode.com/problems/paint-house/
+
+Paint a row of hourses, costs for painting different houses are different. 
+n * 3 means cost of [red, blue, green] for n houses and no two adjacent houses have the same color
+* [[17,2,17],[16,16,5],[14,3,19]] -> 10 (blue, green, blue)
+
+Obviously, it is the DP problem. In each step, we just update the record of the min total cost of painting 1->ith house
+* actions = [red, blue, green]
+* red = min(cost_red+previous_blue, cost_red+previous_green)
+* blue = min(cost_blue+previous_red, cost_blue+previous_green)
+* green = min(cost_green+previous_red, cost_green+previous_blue)
+
+```python3
+def minCost(self, costs: List[List[int]]) -> int:
+        red, blue, green = 0,0,0
+        for cost in costs:
+            red, blue, green = cost[0]+min(blue, green), cost[1]+min(red, green), cost[2]+min(red, blue)
+        return min(red, blue, green)
+```
+
+### Paint House II Leetcode #265 Hard
+https://leetcode.com/problems/paint-house-ii/
+
+Changes: 3 -> k colors. Similar to the previous one. 
+Just change the size of the record from 3 to k
+
+```Python
+def minCostII(self, costs: List[List[int]]) -> int:
+        if not costs: return 0
+        if len(costs)==1: return min(costs[0])
+        previous_rec = [0]*len(costs[0])
+        current_rec = [0]*len(costs[0])
+        for cost in costs:
+            for i in range(len(cost)):
+                current_rec[i] = cost[i]+min(previous_rec[:i]+previous_rec[i+1:])
+            previous_rec = current_rec.copy()
+        return min(current_rec)
+```
+
+
+
 ### House Robber Leetcode #198 
 https://leetcode.com/problems/house-robber/
 
@@ -92,5 +134,6 @@ def rob_1(nums):
             r, n = n+num, max(r, n)
         return max(r, n)
 ```
+
 
 
