@@ -43,6 +43,26 @@ def minCostClimbingStairs(self, cost: List[int]) -> int:
 ```
 
 
+### Leetcode #120 Triangle (Medium)
+* Problem: Given a triangle, find the minimum path sum from top to bottom. Each step you may move to adjacent numbers on the row below.
+* Top-Bottom: if we know the total cost(sum) of each element of the row above, we could calculate the total cost of this row. (just add up the element with adjacent cost in the row above and find the less one)
+* Note: for the 1st/last element of each row, we can only use 1st/last cost
+
+```python3
+def minimumTotal(self, triangle: List[List[int]]) -> int:
+        res = [0]
+        for row in triangle:
+            temp = []
+            temp.append(res[0]+row[0])
+            for i in range(1, len(row)):
+                temp.append(min(res[i-1], res[i])+row[i])
+            temp.append(res[-1]+row[-1])
+            res = temp
+        return min(res)
+```
+
+
+
 ### Paint House Leetcode #256 
 https://leetcode.com/problems/paint-house/
 
