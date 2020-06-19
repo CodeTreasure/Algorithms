@@ -42,11 +42,98 @@ def minCostClimbingStairs(self, cost: List[int]) -> int:
         return min(lag_cost+lag_c, cur_cost+cur_c)
 ```
 
+### Maximum Subarray Leetcode #53
+https://leetcode.com/problems/maximum-subarray/
+
+* **Problem**: 
+* **Actions**: [previous + current_value, starting with current_value]
+* **States**: the maximum at each step
+
+```python3
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        dp = [float('-inf')]
+        for num in nums:
+            dp.append(max(dp[-1]+num, num))
+        return max(dp)
+```
+```python3
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        curr_max = nums[0]
+        global_max = nums[0]
+        for i in range(1, len(nums)):
+            curr_max = max(nums[i], curr_max+nums[i])
+            global_max = max(global_max, curr_max)
+        return global_max
+```
+
+### Unique Paths Leetcode #62
+https://leetcode.com/problems/unique-paths/
+
+* **Problem**: a robot starts from the top-left cell of a m\*n grid (n rows, m cols) and can move down or right each step. how many paths for the robot to the bottom-right cell?
+* **Actions**: [right, down]
+* **Initial States**: elemnts in the 1st row and the 1st col must be 1, can only reach by right->right->...->right or down->down->...->down
+
+```python3
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        dp = [[1]*m for i in range(n)]
+        for i in range(1, n):
+            for j in range(1, m):
+                dp[i][j] = dp[i-1][j] + dp[i][j-1]
+        return dp[n-1][m-1]
+```
+
+### Unique Paths II Leetcode #63
+https://leetcode.com/problems/unique-paths-ii/
+
+* **Change**: there are some obstacles in the grids (marked as 1)
+* **Example**: [[0,0,0],[0,1,0],[0,0,0]] -> 2
+* **Actions**: [right, down] same as the previous problem
+* **Initial States**: similar to preivous problem, but need to mark obstacles to 0
+
+```python3
+class Solution:
+    # faster than 99.9%
+    def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
+        if obstacleGrid[0][0] == 1: return 0
+        dp = [[1-element for element in row] for row in obstacleGrid]
+        n, m = len(obstacleGrid), len(obstacleGrid[0])
+        for i in range(n):
+            for j in range(m):
+                if i == 0 and j>0: 
+                    dp[i][j] = dp[i][j-1] if dp[i][j]!=0 else 0
+                elif j == 0 and i>0:
+                    dp[i][j] = dp[i-1][j] if dp[i][j]!=0 else 0
+                elif i>0 and j>0:
+                    dp[i][j] = dp[i-1][j] + dp[i][j-1] if dp[i][j]!=0 else 0
+        return dp[n-1][m-1]
+```
+
+### Minimum Path Sum  Leetcode #64
+* **Problem**: similar to the Unique Paths (Leetcode #62), but every cell has a cost, need to find the min cost path to the bottom-right cell.
+
+```python3
+class Solution:
+    # faster than 98%
+    def minPathSum(self, grid: List[List[int]]) -> int:
+        for i in range(len(grid)):
+            for j in range(len(grid[0])):
+                if i==0:
+                    if j>0: grid[i][j]+=grid[i][j-1]
+                elif j==0:
+                    grid[i][j]+=grid[i-1][j]
+                else:
+                    grid[i][j]+=min(grid[i-1][j], grid[i][j-1])
+        return grid[-1][-1]
+```
+
 
 ### Leetcode #120 Triangle (Medium)
-* Problem: Given a triangle, find the minimum path sum from top to bottom. Each step you may move to adjacent numbers on the row below.
-* Top-Bottom: if we know the total cost(sum) of each element of the row above, we could calculate the total cost of this row. (just add up the element with adjacent cost in the row above and find the less one)
-* Note: for the 1st/last element of each row, we can only use 1st/last cost
+* **Problem**: Given a triangle, find the minimum path sum from top to bottom. Each step you may move to adjacent numbers on the row below.
+* **Top-Bottom**: if we know the total cost(sum) of each element of the row above, we could calculate the total cost of this row. (just add up the element with adjacent cost in the row above and find the less one)
+* **Note**: for the 1st/last element of each row, we can only use 1st/last cost
 
 ```python3
 def minimumTotal(self, triangle: List[List[int]]) -> int:
@@ -68,10 +155,11 @@ https://leetcode.com/problems/paint-house/
 
 Paint a row of hourses, costs for painting different houses are different. 
 n * 3 means cost of [red, blue, green] for n houses and no two adjacent houses have the same color
-* [[17,2,17],[16,16,5],[14,3,19]] -> 10 (blue, green, blue)
+* **Example**: [[17,2,17],[16,16,5],[14,3,19]] -> 10 (blue, green, blue)
 
 Obviously, it is the DP problem. In each step, we just update the record of the min total cost of painting 1->ith house
-* actions = [red, blue, green]
+* **Actions**: 
+[red, blue, green]
 * red = min(cost_red+previous_blue, cost_red+previous_green)
 * blue = min(cost_blue+previous_red, cost_blue+previous_green)
 * green = min(cost_green+previous_red, cost_green+previous_blue)
@@ -87,7 +175,7 @@ def minCost(self, costs: List[List[int]]) -> int:
 ### Paint House II Leetcode #265 Hard
 https://leetcode.com/problems/paint-house-ii/
 
-Changes: 3 -> k colors. Similar to the previous one. 
+* **Changes**: 3 -> k colors. Similar to the previous one. 
 Just change the size of the record from 3 to k
 
 ```Python
