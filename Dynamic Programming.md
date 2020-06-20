@@ -1,6 +1,46 @@
-Dynamic Programming
+content
+# Introduction to Dynamic Programming (DP)
+## What's a DP Problem?
+Dynamic programming is a optimization method that is used to solve a complex problem by breaking the problem into easier subproblems and conquering them step by step.
+
+The key features of DP problem are
+* **Optimal Substructure**
+* **Overlapping Sub-problems**
+
+In short, if a problem could be solved by solution of some subproblems plus choosing a action from several choices, that's a DP problem.
+
+* **Example 1: Fibonacci Sequence**. 
+Fibonacci Sequence is a sequence starts from 0 and 1, the following nums always are the sum of two preceding ones. Fibonacci = [0, 1, 1, 2, 3, 5, 8, 13,...]
+
+* **Example 2: Min Cost Climbing Stairs (Leetcode #746)**.
+https://leetcode.com/problems/min-cost-climbing-stairs/. On a staircase, the i-th step has some non-negative cost cost[i] assigned. Once you pay the cost, you can either climb one or two steps. You need to find minimum cost to reach the top of the floor, and you can either start from the step with index 0, or the step with index 1.
 
 
+## Steps to Solve a DP Problem?
+The most difficult step to solve a DP problem is recognizing a DP problem. Once you recognize a DP problem, you've already solved half of the problem.
+
+Next, you need to find:
+* **States**: A state is a particular condition using a/several variable(s) to describe the situation at each step in the problem. In some simple problems, it may be the same as the result (min cost or something else). However, in some complicated problems, it may be combination of result and other constraints. For example, in some stock problems, the profit/cost and some limitations (can/cannot buy/sell stocks) describe your conditions every day. 
+* **Actions**: Actions represents the acitons you can choose in step-by-step decision making process. For example, in the problem 'Min Cost Climbing Stairs', you can choose climbing 1 or 2 steps every time.
+* **Transition**: Transition means the process that change one state to another state after taking some actions in each step. Still take Min Cost Climbing Stairs as an example, Transition means how you get result(n) from result(n-1), result(n-2)... Because you can only climb 1 or 2 steps, you just need to consider result(n-1)+cost[n-1] and result(n-2)+cost[n-2] and would know the less one of them is the min cost for n stairs. This part is the second difficult part in a DP problem. But you could master it after some practices.
+* **Base Cases/States**: A base case is the start point of a problem as well as the most simple subproblem that doesn’t depend on other subproblems. For example, Fibonacci[0] = 0, Fibonacci[1] = 1.
+
+After those steps, you've done 99% of a DP problem. Then, you need to choose how to store  solutions of sub-problems and solve the problem forward or backward:
+* **Top-down Method/Memoization (Backward)**: This is a recursive method. You store the solution of subproblems in momery. For example, when you want Fibonacci(n), you just use Fibonacci(n-1)+Fibonacci(n-2), the program will automatically calculate Fibonacci(n-1), Fibonacci(n-2), Fibonacci(n-3)...backward until the base cases, after that, will return Fibonacci(n). This method takes a lot of memory because it calls the functions many times in stack and may not avaible for a large n.
+
+* **Bottom-up Method/Tabulation (Forward)**: This method runs faster than the previous one. You can start from the base case and use a dp table to store solutions of subproblems. Then, derive the next step from previous solution. 
+
+
+# Learn DP by Solving Leetcode Problems
+
+##
+
+https://en.wikipedia.org/wiki/Dynamic_programming
+https://www.geeksforgeeks.org/solve-dynamic-programming-problem/
+# 
+
+## series
+### followup
 
 ### Simple Example: Climbing Stairs (Leetcode #70)
 https://leetcode.com/problems/climbing-stairs/
@@ -147,6 +187,14 @@ def minimumTotal(self, triangle: List[List[int]]) -> int:
             res = temp
         return min(res)
 ```
+
+## Paint House Leetcode #139
+https://leetcode.com/problems/word-break/
+
+* **Problem**: Given a string and a word list. To test if the string could be separated to combination of words in the word list.
+* **Note**: the same word in the word list can be used many times.
+
+* **States**: 
 
 
 
