@@ -16,7 +16,7 @@ Fibonacci Sequence is a sequence starts from 0 and 1, the following nums always 
 https://leetcode.com/problems/min-cost-climbing-stairs/. On a staircase, the i-th step has some non-negative cost cost[i] assigned. Once you pay the cost, you can either climb one or two steps. You need to find minimum cost to reach the top of the floor, and you can either start from the step with index 0, or the step with index 1.
 
 
-## Steps to Solve a DP Problem?
+## Steps to Solve a DP Problem
 The most difficult step to solve a DP problem is recognizing a DP problem. Once you recognize a DP problem, you've already solved half of the problem.
 
 Next, you need to find:
@@ -28,16 +28,42 @@ Next, you need to find:
 After those steps, you've done 99% of a DP problem. Then, you need to choose how to store  solutions of sub-problems and solve the problem forward or backward:
 * **Top-down Method/Memoization (Backward)**: This is a recursive method. You store the solution of subproblems in momery. For example, when you want Fibonacci(n), you just use Fibonacci(n-1)+Fibonacci(n-2), the program will automatically calculate Fibonacci(n-1), Fibonacci(n-2), Fibonacci(n-3)...backward until the base cases, after that, will return Fibonacci(n). This method takes a lot of memory because it calls the functions many times in stack and may not avaible for a large n.
 
-* **Bottom-up Method/Tabulation (Forward)**: This method runs faster than the previous one. You can start from the base case and use a dp table to store solutions of subproblems. Then, derive the next step from previous solution. 
+* **Bottom-up Method/Tabulation (Forward)**: This method runs faster than the previous one. You can start from the base case and use a dp table to store solutions of subproblems. Then, derive the next step from previous solution. In some cases, you can store last several solutions rather than all previous solutions to reduce memory usage from O(n) to O(1).
 
+The following code illustrates the difference of thoese two methods.
+```python3
+def Fibonacci_top_down(n):
+    if n<0: return "N should be a positive int"
+    elif int(n)==0: return 0
+    elif int(n)==1: return 1
+    return Fibonacci_top_down(n-1)+Fibonacci_top_down(n-2)
+    
+ 
+def Fibonacci_bottom_up(n):
+    if n<0: return "N should be a positive int"
+    elif int(n)==0: return 0
+    res = [0, 1]
+    for i in range(int(n-1)):
+        res.append(res[-1]+res[-2])
+    return res[-1]
+    
+    
+def Fibonacci_bottom_up_improvement(n):
+    if n<0: return "N should be a positive int"
+    elif int(n)==0: return 0
+    previous, current =0, 1
+    for i in range(int(n-1)):
+        previous, current = current, current+previous
+    return current
+```
+
+Cheers! Now, you are a DP expert who knows everything about DP :)
+
+Whoops, you find a DP problem **TOOOOO HARD** to deal with? 
+
+Let's start with some practices and you will conquer any DP problems after that. (I promise!!! If you won't, just come back and **PRACTICE MORE (^_^) **.
 
 # Learn DP by Solving Leetcode Problems
-
-##
-
-https://en.wikipedia.org/wiki/Dynamic_programming
-https://www.geeksforgeeks.org/solve-dynamic-programming-problem/
-# 
 
 ## series
 ### followup
@@ -293,3 +319,6 @@ def rob_1(nums):
 
 
 
+# Reference
+* https://en.wikipedia.org/wiki/Dynamic_programming
+* https://www.geeksforgeeks.org/solve-dynamic-programming-problem/
