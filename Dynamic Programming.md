@@ -65,8 +65,6 @@ Let's start with some practices and you will conquer any DP problems after that.
 
 # Learn DP by Solving Leetcode Problems
 
-## series
-### followup
 
 ### Simple Example: Climbing Stairs (Leetcode #70)
 https://leetcode.com/problems/climbing-stairs/
@@ -107,7 +105,7 @@ def minCostClimbingStairs(self, cost: List[int]) -> int:
             lag_c, cur_c = cur_c, c
         return min(lag_cost+lag_c, cur_cost+cur_c)
 ```
-
+## Subarray Problems (Maximum Sum, Maximum Product...)
 ### Maximum Subarray Leetcode #53
 https://leetcode.com/problems/maximum-subarray/
 
@@ -133,6 +131,17 @@ class Solution:
             global_max = max(global_max, curr_max)
         return global_max
 ```
+
+### Maximum Product Subarray #152
+https://leetcode.com/problems/maximum-product-subarray/
+
+* **Problem**: Given a list nums, find the contiguous subarray within an array (containing at least one number) which has the largest product.
+
+* **States**: 
+* **Actions**: [previous * current_value, starting with current_value]
+* **Transition**: 
+* **Base Case**: dp[0]=nums[0]
+
 
 ### Unique Paths Leetcode #62
 https://leetcode.com/problems/unique-paths/
@@ -213,15 +222,70 @@ def minimumTotal(self, triangle: List[List[int]]) -> int:
             res = temp
         return min(res)
 ```
-
-## Paint House Leetcode #139
+## Word Problems(, Break, Split...)
+### Word Break (Leetcode #139, Medium)
 https://leetcode.com/problems/word-break/
 
-* **Problem**: Given a string and a word list. To test if the string could be separated to combination of words in the word list.
+* **Problem**: Given a string s and a wordDict: List[str] . To test if the string could be separated to combination of words in the word list.
 * **Note**: the same word in the word list can be used many times.
 
-* **States**: 
+* **States**: Every index represents a step means if s[:idx] can be broken into words in wordDict.
+* **Actions**: For each state dp[j], you can choose a few successive i-j chars as a action and move to dp[i]
+* **Transition**: Obviously, if dp[j] is True and s[j:i] is a word in wordDict for any j < i, then dp[i] is True. Otherwise, dp[i] is False
+* **Base Case**: If we dont specify the case s[0], we need to make the 1st element in dp table True.
+* **Imporvement**: For most cases, len(word) is much smaller than len(s), so updating backward from dp[i-1] with s[i-1:i] is faster than forward from dp[0] with s[:i].
 
+```python3
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        # 92%
+        dp = [True]+[False]*len(s)
+        for i in range(len(dp)):
+            # for j in range(i):
+            for j in range(i-1, -1, -1):
+                if dp[j] and s[j:i] in wordDict: 
+                    dp[i]=True
+                    break
+        return dp[-1]
+```
+
+### Word Break 2 (Leetcode #140, Hard)
+https://leetcode.com/problems/word-break-ii/
+
+* **Change**: Return all such possible combination of words in wordDict rather than just returning True or False.
+* **Example**: s = "catsanddog",
+wordDict = ["cat", "cats", "and", "sand", "dog"] -> 
+[
+  "cats and dog",
+  "cat sand dog"
+]
+
+* **States**: In this problem, every state need to record the sentence (combination of words) for the corresponding index.
+* **Actions**: For each state dp[j], you can choose a few successive i-j chars as a action and move to dp[i]
+* **Transition**: Obviously, if dp[j] has some sentences and s[j:i] is a word in the wordDict for some j < i, then dp[i] equal to every sentence in dp[j] + " "+ s[j:i]. Otherwise, dp[i] is []
+* **Base Case**: If we dont specify the case s[0], we need to make the 1st element in dp table [""] for iteration later.
+* **Special Cases**: For most cases, if the number of different chars in s is larger than that in wordDict, we know s cannot be separated into words in the wordDict 
+
+```python3
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> List[str]:
+        # 95% 36ms
+        if set(collections.Counter(s).keys()) > set(collections.Counter("".join(wordDict)).keys()):
+            return []
+        
+        length = len(s)
+        dp = {0: [""]}
+        for i in range(length+1):
+            for j in range(i):
+                if j in dp and s[j:i] in wordDict:
+                    if i not in dp:
+                        dp[i]=[words+' '+s[j:i] for words in dp[j]]
+                    else:
+                        dp[i]+=[words+' '+s[j:i] for words in dp[j]]
+        # sentence[1:] is faster than sentence.strip()
+        return [sentence[1:] for sentence in dp.get(length, [])]
+```
+### Next 472. Concatenated Words
 
 
 ### Paint House Leetcode #256 
