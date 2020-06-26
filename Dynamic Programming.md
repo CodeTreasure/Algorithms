@@ -105,6 +105,21 @@ def minCostClimbingStairs(self, cost: List[int]) -> int:
             lag_c, cur_c = cur_c, c
         return min(lag_cost+lag_c, cur_cost+cur_c)
 ```
+## Classical Problems
+### Coin Change (Leetcode #322, Medium)
+https://leetcode.com/problems/coin-change/
+
+```python3
+class Solution:
+    def coinChange(self, coins: List[int], amount: int) -> int: 
+        # 50% 1480
+        dp = [0]+[amount+10]*amount
+        for i in range(1, amount+1):
+            for coin in coins:
+                dp[i] = min(dp[i], dp[i-coin]+1) if i-coin>=0 else dp[i]            
+        return dp[-1] if dp[-1]!=amount+10 else -1
+```
+
 ## Subarray Problems (Maximum Sum, Maximum Product...)
 ### Maximum Subarray Leetcode #53
 https://leetcode.com/problems/maximum-subarray/
@@ -143,85 +158,31 @@ https://leetcode.com/problems/maximum-product-subarray/
 * **Base Case**: dp[0]=nums[0]
 
 
-### Unique Paths Leetcode #62
-https://leetcode.com/problems/unique-paths/
-
-* **Problem**: a robot starts from the top-left cell of a m\*n grid (n rows, m cols) and can move down or right each step. how many paths for the robot to the bottom-right cell?
-* **Actions**: [right, down]
-* **Initial States**: elemnts in the 1st row and the 1st col must be 1, can only reach by right->right->...->right or down->down->...->down
-
-```python3
-class Solution:
-    def uniquePaths(self, m: int, n: int) -> int:
-        dp = [[1]*m for i in range(n)]
-        for i in range(1, n):
-            for j in range(1, m):
-                dp[i][j] = dp[i-1][j] + dp[i][j-1]
-        return dp[n-1][m-1]
-```
-
-### Unique Paths II Leetcode #63
-https://leetcode.com/problems/unique-paths-ii/
-
-* **Change**: there are some obstacles in the grids (marked as 1)
-* **Example**: [[0,0,0],[0,1,0],[0,0,0]] -> 2
-* **Actions**: [right, down] same as the previous problem
-* **Initial States**: similar to preivous problem, but need to mark obstacles to 0
+### Longest Increasing Subsequence (Leetcode #300)
+* **Problem**: Given an unsorted array of integers, find the length of longest increasing subsequence.
+* **Note**: Subsequence may be not countinous in the original array.
+* **Example**: [1,3,6,7,9,4,10,5,6] -> 6 ([1,3,6,7,9,10])
+* **States**: In this problem, every state means the length of increasing subsequence to the index, the solution is max(dp). dont use dp[n] to represent the solution, since we need another parameter to record the position, at which we get the LIS. 
+* **Actions**: we need to compare nums[i], nums[j] for any j<i and dp[j] to decide the value of dp[i]
+* **Transition**: if nums[j]<nums[i], we can inherit the dp[j] otherwise we cannot get useful information from dp[j] since we dont know how many nums before nums[j] should be included. Therefore, for dp[i], we need an array temp to represent the inheritance from dp[j]. if nums[j]<nums[i], temp[j] = dp[j]+1, elsewise 0. dp[i] = max(temp)
+* **Base Case**: The innital state could be the 1s.
 
 ```python3
 class Solution:
-    # faster than 99.9%
-    def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
-        if obstacleGrid[0][0] == 1: return 0
-        dp = [[1-element for element in row] for row in obstacleGrid]
-        n, m = len(obstacleGrid), len(obstacleGrid[0])
-        for i in range(n):
-            for j in range(m):
-                if i == 0 and j>0: 
-                    dp[i][j] = dp[i][j-1] if dp[i][j]!=0 else 0
-                elif j == 0 and i>0:
-                    dp[i][j] = dp[i-1][j] if dp[i][j]!=0 else 0
-                elif i>0 and j>0:
-                    dp[i][j] = dp[i-1][j] + dp[i][j-1] if dp[i][j]!=0 else 0
-        return dp[n-1][m-1]
-```
-
-### Minimum Path Sum  Leetcode #64
-* **Problem**: similar to the Unique Paths (Leetcode #62), but every cell has a cost, need to find the min cost path to the bottom-right cell.
-
-```python3
-class Solution:
-    # faster than 98%
-    def minPathSum(self, grid: List[List[int]]) -> int:
-        for i in range(len(grid)):
-            for j in range(len(grid[0])):
-                if i==0:
-                    if j>0: grid[i][j]+=grid[i][j-1]
-                elif j==0:
-                    grid[i][j]+=grid[i-1][j]
-                else:
-                    grid[i][j]+=min(grid[i-1][j], grid[i][j-1])
-        return grid[-1][-1]
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        if not nums: return 0
+        dp = [1]*len(nums)
+        for i in range (1, len(nums)):
+            for j in range(i):
+                if nums[i] >nums[j]:
+                    dp[i] = max(dp[i], dp[j]+1)
+        return max(dp)
 ```
 
 
-### Leetcode #120 Triangle (Medium)
-* **Problem**: Given a triangle, find the minimum path sum from top to bottom. Each step you may move to adjacent numbers on the row below.
-* **Top-Bottom**: if we know the total cost(sum) of each element of the row above, we could calculate the total cost of this row. (just add up the element with adjacent cost in the row above and find the less one)
-* **Note**: for the 1st/last element of each row, we can only use 1st/last cost
 
-```python3
-def minimumTotal(self, triangle: List[List[int]]) -> int:
-        res = [0]
-        for row in triangle:
-            temp = []
-            temp.append(res[0]+row[0])
-            for i in range(1, len(row)):
-                temp.append(min(res[i-1], res[i])+row[i])
-            temp.append(res[-1]+row[-1])
-            res = temp
-        return min(res)
-```
+
+
 ## Word Problems(, Break, Split...)
 ### Word Break (Leetcode #139, Medium)
 https://leetcode.com/problems/word-break/
@@ -380,6 +341,226 @@ def rob_1(nums):
             r, n = n+num, max(r, n)
         return max(r, n)
 ```
+
+
+## 2D-array Problems ()
+
+### Unique Paths Leetcode #62
+https://leetcode.com/problems/unique-paths/
+
+* **Problem**: a robot starts from the top-left cell of a m\*n grid (n rows, m cols) and can move down or right each step. how many paths for the robot to the bottom-right cell?
+* **Actions**: [right, down]
+* **Initial States**: elemnts in the 1st row and the 1st col must be 1, can only reach by right->right->...->right or down->down->...->down
+
+```python3
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        dp = [[1]*m for i in range(n)]
+        for i in range(1, n):
+            for j in range(1, m):
+                dp[i][j] = dp[i-1][j] + dp[i][j-1]
+        return dp[n-1][m-1]
+```
+
+### Unique Paths II Leetcode #63
+https://leetcode.com/problems/unique-paths-ii/
+
+* **Change**: there are some obstacles in the grids (marked as 1)
+* **Example**: [[0,0,0],[0,1,0],[0,0,0]] -> 2
+* **Actions**: [right, down] same as the previous problem
+* **Initial States**: similar to preivous problem, but need to mark obstacles to 0
+
+```python3
+class Solution:
+    # faster than 99.9%
+    def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
+        if obstacleGrid[0][0] == 1: return 0
+        dp = [[1-element for element in row] for row in obstacleGrid]
+        n, m = len(obstacleGrid), len(obstacleGrid[0])
+        for i in range(n):
+            for j in range(m):
+                if i == 0 and j>0: 
+                    dp[i][j] = dp[i][j-1] if dp[i][j]!=0 else 0
+                elif j == 0 and i>0:
+                    dp[i][j] = dp[i-1][j] if dp[i][j]!=0 else 0
+                elif i>0 and j>0:
+                    dp[i][j] = dp[i-1][j] + dp[i][j-1] if dp[i][j]!=0 else 0
+        return dp[n-1][m-1]
+```
+
+### Minimum Path Sum  Leetcode #64
+* **Problem**: similar to the Unique Paths (Leetcode #62), but every cell has a cost, need to find the min cost path to the bottom-right cell.
+
+```python3
+class Solution:
+    # faster than 98%
+    def minPathSum(self, grid: List[List[int]]) -> int:
+        for i in range(len(grid)):
+            for j in range(len(grid[0])):
+                if i==0:
+                    if j>0: grid[i][j]+=grid[i][j-1]
+                elif j==0:
+                    grid[i][j]+=grid[i-1][j]
+                else:
+                    grid[i][j]+=min(grid[i-1][j], grid[i][j-1])
+        return grid[-1][-1]
+```
+
+
+### Leetcode #120 Triangle (Medium)
+* **Problem**: Given a triangle, find the minimum path sum from top to bottom. Each step you may move to adjacent numbers on the row below.
+* **Top-Bottom**: if we know the total cost(sum) of each element of the row above, we could calculate the total cost of this row. (just add up the element with adjacent cost in the row above and find the less one)
+* **Note**: for the 1st/last element of each row, we can only use 1st/last cost
+
+```python3
+def minimumTotal(self, triangle: List[List[int]]) -> int:
+        res = [0]
+        for row in triangle:
+            temp = []
+            temp.append(res[0]+row[0])
+            for i in range(1, len(row)):
+                temp.append(min(res[i-1], res[i])+row[i])
+            temp.append(res[-1]+row[-1])
+            res = temp
+        return min(res)
+```
+
+### Range Sum Query 1D - Immutable (Leetcode #303) 
+https://leetcode.com/problems/range-sum-query-immutable/
+
+Not so close to DP, but follow-up questions are typical dp questions.
+```python3
+class NumArray:
+    def __init__(self, nums: List[int]):
+        self.sums = nums
+        for i in range(1, len(nums)):
+            self.sums[i]+=self.sums[i-1]
+
+        
+    def sumRange(self, i: int, j: int) -> int:
+        return self.sums[j] if i==0 else self.sums[j]-self.sums[i-1]
+```
+
+### Range Sum Query 2D - Immutable (Leetcode #304, Medium) 
+
+
+```python3
+class NumMatrix:
+    def __init__(self, matrix: List[List[int]]):
+        if not matrix: return None
+        self.sums =[[0]+row for row in matrix]
+        self.sums = [[0]*len(self.sums[0])] + self.sums
+        for i in range(1, len(self.sums)):
+            for j in range(1, len(self.sums[i])):
+                self.sums[i][j] += self.sums[i][j-1]
+            for j in range(1, len(self.sums[i])):
+                self.sums[i][j] += self.sums[i-1][j]
+        
+        
+    def sumRegion(self, row1: int, col1: int, row2: int, col2: int) -> int:
+        res = self.sums[row2+1][col2+1] - self.sums[row1][col2+1] - self.sums[row2+1][col1] + self.sums[row1][col1]
+        return(res)
+        
+```
+
+### Range Sum Query 2D - Mutable (Leetcode #308, Hard) 
+
+
+similar to previous one, we have 
+
+```python3
+class NumMatrix:
+    # 20% 1500+
+    def __init__(self, matrix: List[List[int]]):
+        if not matrix: return None
+        self.matrix = matrix
+        self.sums =[[0]+row for row in matrix]
+        self.sums = [[0]*len(self.sums[0])] + self.sums
+        for i in range(1, len(self.sums)):
+            for j in range(1, len(self.sums[i])):
+                self.sums[i][j] += self.sums[i][j-1]
+            for j in range(1, len(self.sums[i])):
+                self.sums[i][j] += self.sums[i-1][j]
+
+                
+    def update(self, row: int, col: int, val: int) -> None:
+        # update sums
+        for i in range(row+1, len(self.sums)):
+            for j in range(col+1, len(self.sums[0])):
+                self.sums[i][j] += val-self.matrix[row][col]
+        
+        # update matrix
+        self.matrix[row][col] = val
+                
+                
+    def sumRegion(self, row1: int, col1: int, row2: int, col2: int) -> int:
+        res = self.sums[row2+1][col2+1] - self.sums[row1][col2+1] - self.sums[row2+1][col1] + self.sums[row1][col1]
+        return(res)
+```
+
+* **Improvement**: (however, if we use this in previous problem, it becomes slower.)
+
+```python3
+class NumMatrix:
+    # 68% 164
+    def __init__(self, matrix: List[List[int]]):
+        if not matrix: return None
+        self.matrix = matrix
+        self.sums =[[0]+row for row in matrix]
+        self.sums = [[0]*len(self.sums[0])] + self.sums
+        for i in range(1, len(self.sums)):
+            for j in range(1, len(self.sums[i])):
+                self.sums[i][j] += self.sums[i][j-1]
+                
+    def update(self, row: int, col: int, val: int) -> None:
+        # update sums
+        for j in range(col+1, len(self.sums[0])):
+            self.sums[row+1][j] += val-self.matrix[row][col]
+        
+        # update matrix
+        self.matrix[row][col] = val
+                
+                
+    def sumRegion(self, row1: int, col1: int, row2: int, col2: int) -> int:
+        res = 0
+        for i in range(row1+1, row2+2):
+            res += self.sums[i][col2+1] - self.sums[i][col1]
+        return(res)
+```
+
+
+### Maximal Square (Leetcode #221) 
+https://leetcode.com/problems/maximal-square/
+
+* **Problem**: Given a 2D binary matrix filled with 0's and 1's, find the largest square containing only 1's and return its area.
+* **Example**: [[0 0 1],[0 1 1],[1 1 1]] -> 4
+* **States**: In this problem, every state need to record the square/sides for the corresponding positions.
+* **Actions**: For each state dp[i,j], we know the adjacent elements will impact the next states
+* **Transition**: if dp[i-1,j-1], dp[i-1,j], dp[i,j-1] has the same side n and matrix[i,j] == 1, then dp[i,j] = n+1. otherwise, then dp[i,j] is decided by the min side of dp[i-1,j-1], dp[i-1,j] and dp[i,j-1]. It's easy to plot a figure to proof that.
+* **Base Case**: The innital state could be the same as the input or 0s.
+
+```python3
+class Solution:
+    def maximalSquare(self, matrix: List[List[str]]) -> int:
+        # 80%
+        if matrix is None or len(matrix) < 1:
+            return 0
+        
+        rows = len(matrix)
+        cols = len(matrix[0])
+        
+        dp = [[0]*(cols+1) for _ in range(rows+1)]
+        max_side = 0
+        
+        for r in range(rows):
+            for c in range(cols):
+                if matrix[r][c] == '1':
+                    dp[r+1][c+1] = min(dp[r][c], dp[r+1][c], dp[r][c+1]) + 1 
+                    max_side = max(max_side, dp[r+1][c+1])
+                
+        return max_side * max_side
+ ```
+ 
 
 
 
