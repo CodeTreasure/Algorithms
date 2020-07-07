@@ -62,7 +62,7 @@ class TwoSum:
 ```
 
 
-# Multi-Pointer
+## Multi-Pointer
 
 ### Two Sum III - Data structure design Leetcode #170
 
@@ -103,7 +103,6 @@ class TwoSum:
 
 
 
-
 ### 3 Sum Leetcode #198
 https://leetcode.com/problems/3sum/
 
@@ -133,6 +132,32 @@ def threeSum(self, nums: List[int]) -> List[List[int]]:
                     r-=1
 
 ```
+
+### Minimum Size Subarray Sum (Leetcode #209 Medium)
+https://leetcode.com/problems/minimum-size-subarray-sum/
+
+* **Problem**: Given an array of n positive integers and a positive integer s, find the minimal length of a contiguous subarray of which the sum ≥ s. If there isn't one, return 0 instead.
+
+
+```python3
+class Solution:
+    def minSubArrayLen(self, s: int, nums: List[int]) -> int:
+        # 2 pointers
+        if sum(nums)>=s: res = len(nums)
+        else: return 0
+        cur_sum = 0
+        start_idx, end_idx = 0, 0
+        while start_idx<len(nums) and end_idx<len(nums):
+            cur_sum += nums[end_idx]
+            while cur_sum>=s:
+                res = min(res, end_idx-start_idx+1)
+                cur_sum -= nums[start_idx]
+                start_idx+=1
+                
+            end_idx+=1
+        return res
+```
+
 
 
 
@@ -168,12 +193,56 @@ class Solution:
         return res
 ```
 
+## Bidirection Subarrays
+
+### Product of Array Except Self (Leetcode #238 Medium)
+https://leetcode.com/problems/product-of-array-except-self/
+
+* **Problem**: Given an array nums of n integers where n > 1,  return an array output such that output[i] is equal to the product of all the elements of nums except nums[i].
+* **Note**: Solve without division and in O(n)
+
+```python3
+class Solution:
+    def productExceptSelf(self, nums: List[int]) -> List[int]:
+        res, left_prod, right_prod = [1]*len(nums), [1]*len(nums), [1]*len(nums)
+        for i in range(1, len(nums)):
+            left_prod[i] = left_prod[i-1]*nums[i-1]
+            right_prod[-i-1] = right_prod[-i]*nums[-i]
+            res[i] *= left_prod[i]
+            res[-i-1]*= right_prod[-i-1]
+        return res
+```
+
+### Trapping Rain Water (Leetcode #42 Hard)
+https://leetcode.com/problems/trapping-rain-water/
+
+* **Idea**: for each step[i], the volume of water is equal to min(left_max, right_max)-height[i]. ***left_max*** is the maximum height of bar from the left end upto the index i, so is ***left_right***
+
+```python3
+left_max, right_max = 0, 0
+        res = [float("inf")]*len(height)
+        for i in range(len(height)):
+            left_max=max(left_max, height[i])
+            res[i] = min(res[i], left_max-height[i])
+            right_max=max(right_max, height[-i-1])
+            res[-i-1] = min(res[-i-1], right_max-height[-i-1])
+        return sum(res)
+```
+
+
+
+
+
+
 # Index Manipulation
 
-### Set Matrix Zeroes Leetcode 73 (medium)
+## Matrix
+
+### Set Matrix Zeroes (Leetcode #73 Medium)
 https://leetcode.com/problems/set-matrix-zeroes/
 
-* Note: in-place change
+* **Problem**: Given a m x n matrix, if an element is 0, set its entire row and column to 0. Do it in-place.
+* **Note**: in-place change
 
 Need to improve
 
@@ -196,8 +265,10 @@ class Solution:
                         matrix[i][j] = 0
 ```
 
-### Search a 2D Matrix Leetcode 74 (medium)
+### Search a 2D Matrix (Leetcode #74 Medium)
 https://leetcode.com/problems/search-a-2d-matrix/
+
+* **Problem**: Given a m x n sorted matrix, Integers in each row are sorted from left to right. The first integer of each row is greater than the last integer of the previous row. Find if a number is in the Matrix.
 
 * binary search
 ```python3
@@ -257,6 +328,44 @@ class Solution:
             return False
         else: return False
 ```
+
+
+### Game of Life (Leetcode #289 Medium)
+https://leetcode.com/problems/search-a-2d-matrix/
+
+* **Problem**: Given a m x n cells, each cell has initial state live(1) or dead(0). they can update their status with eight neighbors.
+* **Transition 1**: Any live cell with fewer than (<) 2 or more than (>) 3 live neighbors dies. keeps live with 2 or 3 live cells. 
+* **Transition 2**: Any dead cells with (==) 3 live neighbors becomes a live cell.
+
+```python3
+class Solution:
+    def gameOfLife(self, board: List[List[int]]) -> None:
+        """
+        Do not return anything, modify board in-place instead.
+        """
+        90%
+        count = [[0]*len(row) for row in board]
+        new = [[0] + row + [0] for row in board]
+        new.insert(0, [0]*len(new[0]))
+        new.append([0]*len(new[0]))
+        
+        for i in range(len(count)):
+            for j in range(len(count[i])):
+                count[i][j] = new[i][j]+new[i][j+1]+new[i][j+2]+new[i+1][j]+new[i+1][j+2] + new[i+2][j]+new[i+2][j+1]+new[i+2][j+2]
+                
+        for i in range(len(board)):
+            for j in range(len(board[i])): 
+                if board[i][j] == 0:
+                    board[i][j] = 1 if count[i][j] == 3 else 0
+                elif count[i][j] < 2 or count[i][j] >3:
+                        board[i][j] = 0
+
+```
+* **Improvement**: Use dummy variables to record preivous cell.
+```python3
+code
+```
+
 
 
 39. Combination Sum
