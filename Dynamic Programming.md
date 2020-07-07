@@ -184,6 +184,56 @@ class Solution:
 
 
 ## Word Problems(, Break, Split...)
+
+### Longest Substring Without Repeating Characters (Leetcode #3, Medium)
+https://leetcode.com/problems/longest-substring-without-repeating-characters/
+
+* **States**: dp[i] represents the length of substring without repreating characters ending with index i
+* **Actions**: For each step s[i], we need to decide if add it to current substring s[a:i] or start with a char behind s[a], eg s[b:i]+s[i], b>a
+* **Transition**: if s[i] appears in s[a:i], we can need to find b>a that s[a:i]+s[i] dont have repeating chars. Otherwise, we just add s[i] to s[a:i], and dp[i]=dp[i-1]+1. The only difficult thing is the starting position of each dp[j] is different, if we s[i] appears in s[a:i], we need to find the starting point of dp[i]. so the length should be min of dp[j]+i-j for all j<i. 
+* **Base Case**: 1's for all individual chars
+
+
+```python3
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        if not s: return 0
+        dp = [1]*len(s)
+        
+        for i in range(1, len(s)):
+            local_length = float("inf")
+            for j in range(i-1, -1, -1):
+                if s[i]==s[j]:
+                    break
+                else:
+                    dp[i]+=1
+                    local_length = min(dp[j]+i-j, local_length)
+            
+            dp[i] = min(dp[i], local_length)            
+        return max(dp)
+```
+
+* **Improvement**: The previous complexity is O(n^2). Actually, we could know the starting index for the substring ending with i. 
+
+```python3
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        record = {}
+        curr_string = 0
+        res = 0
+        for i in range(len(s)):
+            if s[i] not in record:
+                curr_string = curr_string+1
+            else:
+                curr_string = min(curr_string+1, i - record[s[i]])
+                
+            record[s[i]] = i
+            res = max(res, curr_string)
+            
+        return res
+
+```
+
+
 ### Word Break (Leetcode #139, Medium)
 https://leetcode.com/problems/word-break/
 
