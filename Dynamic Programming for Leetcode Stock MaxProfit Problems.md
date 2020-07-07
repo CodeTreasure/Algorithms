@@ -47,14 +47,15 @@ def maxProfit(self, prices: List[int]) -> int:
         # DP
         if len(prices)<2:
             return 0
-        n = 0
-        b = -prices[0]
+        profit = 0
+        cost = -prices[0]
         
         for p in prices:
-            n = max(n, b+p)
-            b = max(-p, b)
+            profit = max(profit, cost+p)
+            cost = max(-p, cost)
+            # print(cost, profit)
             
-        return n
+        return profit
 ```
 
 Leetcode #122
@@ -68,14 +69,14 @@ https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
 def maxProfit2(self, prices: List[int]) -> int:
         # DP 
         if len(prices)<2: return 0
-        n = 0
-        b = -prices[0]
+        profit = 0
+        cost = -prices[0]
         
         for p in prices:
-            n = max(n, b+p)
-            b = max(n-p, b)
+            profit = max(profit, cost+p)
+            cost = max(profit-p, cost)
             
-        return n
+        return profit
 ```
 
 
