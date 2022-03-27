@@ -1,0 +1,37 @@
+
+
+https://www.youtube.com/watch?v=xqidNhvwKzI
+
+DFS 更适合 搜索一条路径 
+BFS 更适合 找出最短路径，和所有可能
+DFS其实就是回溯算法; BFS找到的路径一定是最短的，但代价就是空间复杂度比 DFS 大很多
+
+DFS 框架
+一般是递归，所以参数要多几个
+
+1. base case
+    判断是否满足答案情况，如果满足，添加到答案
+
+2. 对每一种可能都做一下几种情况
+
+
+
+
+
+
+1. base case
+    判断是否满足答案情况，如果满足，添加到答案
+
+2. 对每一种可能都做一下几种情况
+2.a 记录现在的状态
+2.b backtrack(next state)
+2.c restore回到 2.a 现在的状态(回溯)
+
+
+Backtrack 也是top-down DFS
+
+很重要的一点是要回溯
+不然之前的路径会影响结果
+
+topdown 一般不返回return东西，把现有路径当作参数传入
+bottomup 一般返回东西
