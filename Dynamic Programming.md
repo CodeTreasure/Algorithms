@@ -411,6 +411,24 @@ def rob(self, nums: List[int]) -> int:
         for num in nums[1:]:
             r, n = n+num, max(r, n)
         return max(r, n)
+
+
+def rob(self, nums: List[int]) -> int:
+    # 这个唯一的约束是相邻两个不能抢钱
+    # 第i个只要和i-1分开就可以，因为每个数都是正的，只用考虑前后两步就可以
+    
+    if len(nums) <=2:
+        return max(nums)
+
+    dp = [0] * len(nums)
+
+    dp[0] = nums[0]
+    dp[1] = max(nums[0:2])
+
+    for i in range(2, len(dp)):
+        dp[i] = max(dp[i-1], dp[i-2]+nums[i])
+    
+    return dp[-1]
 ```
 
 ### House Robber II Leetcode #213 
