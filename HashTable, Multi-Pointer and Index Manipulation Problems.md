@@ -158,6 +158,41 @@ class Solution:
         return res
 ```
 
+### Sliding Window Maximum (Leetcode #239 Hard) 
+Deque
+
+**Problem**: You are given an array of integers nums, there is a sliding window of size k which is moving from the very left of the array to the very right. You can only see the k numbers in the window. Each time the sliding window moves right by one position.
+给以array返回k长度subarray的最大值
+
+
+```python3
+from collections import deque
+
+if len(nums)==1 or k==1:
+    return nums
+
+idx = deque()
+res = []
+
+for i in range(len(nums)):
+    # 当deque有值，当前deque中存在window外的index
+    while (idx and i > idx[0] + k - 1):
+        idx.popleft()
+
+    # 当当前数大于deque的最后一个数时，把最后一个数pop出来（直到没有），加入当前数
+    while (idx and nums[i] > nums[idx[-1]]):
+        idx.pop()
+    
+    # 加入当前数的下标
+    idx.append(i)
+
+    if i >= k-1:
+        res.append(nums[idx[0]])
+
+return res
+
+```
+
 
 
 
