@@ -136,6 +136,34 @@ class Solution:
         return dp[-1] if dp[-1]!=amount+10 else -1
 ```
 
+### Minimum Cost For Tickets (Leetcode #983, Medium)
+```python3
+def mincostTickets(self, days: List[int], costs: List[int]) -> int:
+    # 类似找硬币/爬楼梯
+    # 用一个array装需要出行的天数，用dp装相应的cost
+
+    travel_index = [0] * (days[-1]+1)
+    dp = [0] * len(travel_index)
+    
+    for day in days:
+        travel_index[day] = 1
+    
+    for i in range(len(dp)):
+        if travel_index[i] == 1:
+            if i-30>=0:
+                dp[i] = min(dp[i-1]+costs[0], dp[i-7]+costs[1], dp[i-30]+costs[2])
+            elif i-7>=0:
+                # 尽管30天超出了左边范围，我们也可以尝试从一开始就购买月票，所以最后带上 dp[0]+costs[2]
+                dp[i] = min(dp[i-1]+costs[0], dp[i-7]+costs[1], dp[0]+costs[2])
+            elif i-1>=0:
+                # 同理，带上dp[0]+costs[1] 和 dp[0]+costs[2]
+                dp[i] = min(dp[i-1]+costs[0], dp[0]+costs[1], dp[0]+costs[2])
+        else:
+            # 当不旅行的时候，cost要和前一天一样。就相当于后面的都呆在家，前面的cost是固定的！
+            dp[i] = dp[i-1]
+    return dp[-1]
+```
+
 ## Subarray Problems (Maximum Sum, Maximum Product...)
 ### Maximum Subarray Leetcode #53
 https://leetcode.com/problems/maximum-subarray/
