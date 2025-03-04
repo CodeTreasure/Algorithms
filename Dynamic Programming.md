@@ -95,6 +95,19 @@ Once you pay the cost, you can either climb one or two steps. You need to find m
 
 ```python3
 def minCostClimbingStairs(self, cost: List[int]) -> int:
+    if len(cost)<3:
+        return min(cost)
+
+    dp = [0]*(len(cost)+1)
+    # 从第3个开始，找前两个cost小的放到当前步
+    for i in range(2, len(dp)):
+        dp[i] = min(dp[i-1]+cost[i-1], dp[i-2]+cost[i-2])
+
+    return dp[-1]
+
+# 如果需要优化space，只用最后两个变量储存就可以。
+
+def minCostClimbingStairs(self, cost: List[int]) -> int:
         lag_cost = 0
         cur_cost = 0
         lag_c = cost[0]
