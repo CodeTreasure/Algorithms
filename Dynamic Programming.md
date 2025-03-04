@@ -126,6 +126,9 @@ https://leetcode.com/problems/coin-change/
 class Solution:
     def coinChange(self, coins: List[int], amount: int) -> int: 
         # 50% 1480
+        # 和上楼梯很像，把总体 amount 当作台阶总数，每次可以上coin数额的楼梯，然后看能不能到台阶
+        # 我们用一个 dp[amount] 来储存从 1 到 amount 的每一个数额最少的coin
+
         dp = [0]+[amount+10]*amount
         for i in range(1, amount+1):
             for coin in coins:
