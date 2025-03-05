@@ -524,6 +524,35 @@ class Solution:
                 elif i>0 and j>0:
                     dp[i][j] = dp[i-1][j] + dp[i][j-1] if dp[i][j]!=0 else 0
         return dp[n-1][m-1]
+
+def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
+    if not obstacleGrid: return null
+    row = len(obstacleGrid)
+    col = len(obstacleGrid[0])
+    # 不能都*row，否则所有row看成一个变量
+    dp = [[0]*col for i in range(row)]
+    # print(dp)
+    dp[0][0] = 1
+    for i in range(row):
+        for j in range(col):
+            # 当有障碍物时，让这一格为0，因此下面或着右边的格子再计算时，就会忽略掉，这个条件是比Q1多加的
+            if obstacleGrid[i][j] == 1:
+                dp[i][j] = 0
+            else:
+                if i == 0:
+                    if j != 0:
+                        # 当在第一行时，没有别的选择，右边的格子只能从左边过来，所以路径数=左边格子的路径数+0
+                        dp[i][j] += dp[i][j-1]
+                else:
+                    if j == 0:
+                        dp[i][j] += dp[i-1][j]
+                    else:
+                        # 当在中间的时候，有两个格子可以走到现在的格子，所以是把两种可能都加上
+                        dp[i][j] = dp[i-1][j] + dp[i][j-1]
+    # print(dp)
+    return dp[-1][-1]
+
+
 ```
 
 ### Minimum Path Sum  Leetcode #64
