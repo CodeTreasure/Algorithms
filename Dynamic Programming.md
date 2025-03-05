@@ -452,6 +452,32 @@ def rob_1(nums):
         for num in nums[1:]:
             r, n = n+num, max(r, n)
         return max(r, n)
+
+
+def rob(self, nums: List[int]) -> int:
+    # 和上一题类似，不过我们可以分为两种情况，第一种是rob第一家，第二种是跳过第一家
+    if len(nums) <= 3: return max(nums)
+
+    dp1 = [0] * len(nums)
+    dp2 = [0] * len(nums)
+
+    dp1[0] = nums[0]
+    #这个很关键，dp1是没有约束下的最优解，所以长度为2的时候是前两个最大值
+    dp1[1] = max(nums[0:2])
+
+    dp2[0] = 0
+    dp2[1] = nums[1]
+
+    for i in range(2, len(dp1)):
+        # 对于dp1，不能取最后一个，因为已经选了第一个。最后一个dp值只能等于前一个dp值
+        if i < len(dp1)-1:
+            dp1[i] = max(dp1[i-2]+nums[i], dp1[i-1])
+        else:
+            dp1[i] = dp1[i-1]
+
+        dp2[i] = max(dp2[i-2]+nums[i], dp2[i-1])
+
+    return max(dp1[-1], dp2[-1])
 ```
 
 
