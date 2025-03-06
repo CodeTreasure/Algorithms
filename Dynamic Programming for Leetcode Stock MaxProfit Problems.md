@@ -83,6 +83,29 @@ https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
 2. Cannot short stock (position >=0)
 
 ```python3
+
+def maxProfit(self, prices: List[int]) -> int:
+    # DP
+    # 在每天用两个值分别统计，没有股票，以及购买股票的profit最大值
+    # 每一天，没有股票的情况，等于 max(上一天有股票卖出, 上一天没有股票利润)
+    # 有股票，等于 max(上一天没有股票但今天买了股票, 上一天有股票但是今天没卖的利润)
+    if not prices:
+        return 0
+
+    n = len(prices)
+    dp = [[0] * 2 for _ in range(n)]
+    
+    # 初始化第一天的值
+    dp[0][0] = 0  # No stock on day 0, profit = 0
+    dp[0][1] = -prices[0]  # Bought stock on day 0, negative profit
+    
+    for i in range(1, n):
+        dp[i][0] = max(dp[i-1][0], dp[i-1][1]+prices[i])
+        dp[i][1] = max(dp[i-1][1], dp[i-1][0]-prices[i])
+
+    return dp[-1][0]  # Maximum profit at last day without holding stock
+
+
 def maxProfit2(self, prices: List[int]) -> int:
         # DP 
         if len(prices)<2: return 0
