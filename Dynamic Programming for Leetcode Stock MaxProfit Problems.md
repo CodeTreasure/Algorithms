@@ -43,6 +43,23 @@ And at the beginning, n = 0 and b = -infinity (since it is unavaible for you get
 
 ### Answer
 ```python3
+
+def maxProfit(self, prices: List[int]) -> int:
+# 只交易一次，所以我们找到之前价格最低点，算出来每一步卖出的利润，最后看利润的最大值就可以
+if len(prices)<2: return 0
+
+# 初始化第一个值
+lowest_price = [prices[0]]
+res = [0]
+
+# 对于每个price，和之前的最低值比较，然后算当前价格-最低买入价格的利润
+for price in prices[1:]:
+    lowest_price.append(min(price, lowest_price[-1]))
+    res.append(price-lowest_price[-1])
+
+return max(res)
+
+
 def maxProfit(self, prices: List[int]) -> int:
         # DP
         if len(prices)<2:
